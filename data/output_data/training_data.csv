@@ -1,0 +1,16 @@
+HTeam
+ATeam
+HPts
+Apts
+HSideWinFactor = HomeTeam 3 * oponnent_defeated_points playing home
+ASideWinFactor = AwayTeam 3 * oponnent_defeated_points playing away
+HSideTieFactor = HomeTeam 1 * oponnent_defeated_points playing home
+ASideTieFactor = AwayTeam 1 * oponnent_defeated_points playing away
+HPlayingContinental = 1 if playing continental league
+APlayingContinental = 1 if playing continental league
+HPrevSeasonPts
+APrevSeasonPts
+
+
+HGoals
+AGoals

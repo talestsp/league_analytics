@@ -1,4 +1,4 @@
-from pandas import merge, Series
+from pandas import merge, Series, DataFrame
 
 from dao.dao import DAO
 from league import League
@@ -9,35 +9,45 @@ class LeagueAnalysis:
 	def __init__(self, league):
 		self.league = league
 
-	def ranking_correlation(self, rounds):
-		print()
-		print("ranking_correlation")
-		to_date = self.league.date_by_round(19)
-		print(to_date)
-		t1 = self.league.table(to_date=to_date).head()
-		print(t1)
+	def ranking_corr_by_dates(self, df_tables, method="spearman", n_head=None):
+		'''
+		Args:
+			df_tables: list of table dataframes
+			method: ranking correlation method: 'spearman' or 'kendall'
+			n_head: n firsts position for the table, if None all position will be considered
 
-		to_date = self.league.date_by_round(20)
-		print(to_date)
-		t2 = self.league.table(to_date=to_date).head()
-		print(t2)
+		Returns:
+			an array with the correlations between consecutive dates in dates_list 
+		for the <n_head> firsts positions in the table from that date.
+		'''
 
-		to_date = self.league.date_by_round(21)
-		print(to_date)
-		t3 = self.league.table(to_date=to_date).head()
-		print(t3)
+		if n_head is None:
+			n_head = len(self.league.teams())
 
-		print()
+		correlations = []
 
-		print(t1["Team"].tolist())
-		print(t2["Team"].tolist())
-		print(t3["Team"].tolist())
-		print()
+		for i in range(len(df_tables) - 1):
+			df1 = df_tables[i]
+			df2 = df_tables[i + 1]
+			
+			ranking1, ranking2 = self.rankings(df1=df1, df2=df2, n_head=n_head)
+			corr = ranking1.corr(ranking2, method=method)
+			correlations.append(corr)
+			
+		return correlations		
 
-		print(t1["Team"].corr(t2["Team"], method="spearman"))
-		print(t2["Team"].corr(t3["Team"], method="spearman"))
-		print(Series(["a", "b", "c", "d", "x"]).corr(Series(["a", "b", "c", "d", "y"]), method="spearman"))
-		print()
+
+	def rankings(self, df1, df2, n_head):
+		df1_rankings = df1.head(n_head).index.tolist()
+		df1_teams = df1.head(n_head)["Team"].tolist()
+
+		df2_rankings = []
+
+		for team in df1_teams:
+			mapping_rank1_rank2 = df2[df2["Team"] == team].index.item()
+			df2_rankings.append(mapping_rank1_rank2)
+
+		return Series(df1_rankings), Series(df2_rankings)
 
 	def home_away_match_performance(self, team):
 		'''

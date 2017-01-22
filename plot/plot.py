@@ -63,7 +63,20 @@ class PlotMultiLine:
         fig = figure(title=self.title, x_axis_label=self.x_label, y_axis_label=self.y_label,
                      width=fig_width, height=fig_height, x_range=(-0.3, max_x) ,y_range=(-1, max_y),
                      tools=tools, toolbar_location="left")
-        fig.background_fill_color = "beige"
+
+        fig.background_fill_color = "#ecfafc"
+      
+        fig.ygrid.grid_line_color = '#dcdddd'
+        #fig.ygrid.grid_line_alpha = 5
+
+        fig.ygrid.minor_grid_line_color = '#ebebeb'
+        fig.ygrid.minor_grid_line_alpha = 2
+
+        fig.xgrid.grid_line_color = "#ecfafc"
+        #fig.xgrid.grid_line_alpha = 5
+
+        fig.xgrid.minor_grid_line_color = "#ebebeb"
+        fig.xgrid.minor_grid_line_alpha = 2
 
         legends = []
 

@@ -10,14 +10,15 @@ BETTING_COLS = ['Div', 'Date', 'HomeTeam', 'AwayTeam', 'B365H', 'B365D', 'B365A'
 class DAO:
 
 	def __init__(self, country, season, cols="all"):
+		self.country = country
+		self.season = season
 		self.data = self.load_data(country, season, cols=cols)
 
 	def load_data(self, country, season, cols):
 		data_path = DATA_DIR + country + "-" + season + ".csv"
 
 		if not exists(data_path):
-			print(data_path)
-			raise Exception("Data file not found")
+			raise Exception("Data file not found:", str(data_path))
 
 		data = pd.read_csv(data_path)
 		data = self.date_to_datetime(data)

@@ -10,6 +10,8 @@ class League:
 
 	def __init__(self, dao):
 		self.dao = dao
+		self.country = dao.country
+		self.season = dao.season
 
 	def table(self, from_date=None, to_date=None):
 		'''
@@ -166,7 +168,10 @@ class League:
 
 		return full_matches - matches_played
 
-	def date_by_round(self, n_round):		
+	def date_by_round(self, n_round):
+		'''
+		Returns the lowest date on which all teams have accomplishd <n_round> matches
+		'''	
 		dates = self.matches()["Date"].drop_duplicates()
 
 		for date in dates:

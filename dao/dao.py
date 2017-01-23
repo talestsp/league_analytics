@@ -62,7 +62,6 @@ class DAO:
 
 	def search_percentil_date(self, percentile=0.5):
 		#TODO - performance could be better
-
 		dates = self.data["Date"].drop_duplicates().sort_values().tolist()
 		best_date, best_diff = None, 100
 

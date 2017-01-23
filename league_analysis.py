@@ -48,6 +48,8 @@ class LeagueAnalysis:
 
 		return Series(df1_points), Series(df2_points)
 
+	
+
 	def home_away_match_performance(self, team):
 		'''
 		Args:

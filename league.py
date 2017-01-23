@@ -188,11 +188,13 @@ class League:
 		return date
 		
 	def half_league_date(self):
-		#TO BE FIXED - it must consider the on going league data
 		'''
 		Returns the date that the teams played half league
 		'''
-		half_data = self.dao.half_league_data(half=1)
+		n_teams = len(self.teams())
+		half_total_matches = int(round((n_teams ** 2 - n_teams) / 2))
+		
+		half_data = self.dao.data.sort_values(by="Date").iloc[range(half_total_matches)]
 		return max(half_data["Date"])
 
 	def start_league_date(self):

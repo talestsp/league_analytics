@@ -18,6 +18,9 @@ class league_test(unittest.TestCase):
 		spa_dao_15_16 = DAO(country="spain", season="15-16", cols="sport_cols")
 		self.league_spa = League(spa_dao_15_16)
 
+	def test_half_league_date(self):
+		self.league.half_league_date()
+
 	def test_table(self):
 
 		half_league_date = self.league.date_by_round(19)

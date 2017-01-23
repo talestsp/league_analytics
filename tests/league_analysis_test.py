@@ -66,6 +66,6 @@ class table_analysis_test(unittest.TestCase):
 		table_df2 = eng_league.table(to_date=date2)
 
 		corr2 = eng_league_anl.points_corr(df_tables=[table_df1, table_df2], method="spearman", n_head=5)
-		self.assertLess(0.6665, corr2[0])
-		self.assertGreater(0.6669, corr2[0])
+		self.assertLess(0.665, corr2[0])
+		self.assertGreater(0.669, corr2[0])
 		

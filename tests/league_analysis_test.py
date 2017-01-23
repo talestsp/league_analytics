@@ -24,7 +24,7 @@ class table_analysis_test(unittest.TestCase):
 		self.assertEqual(10, leic_perf)
 		self.assertEqual(7, crpl_perf)
 
-	def test_rankings(self):
+	def test_paired_points(self):
 		eng_dao_16_17 = DAO(country="england", season="16-17", cols="sport_cols")
 		eng_league = League(eng_dao_16_17)
 		eng_league_anl = LeagueAnalysis(league=eng_league)
@@ -39,19 +39,18 @@ class table_analysis_test(unittest.TestCase):
 		df1 = eng_league.table(to_date=date1)
 		df2 = eng_league.table(to_date=date2)
 
-		#               df1		df2
-		#1          Chelsea		Chelsea
-		#2          Arsenal		Liverpool
-		#3        Liverpool		Man City
-		#4         Man City		Arsenal
-		#5        Tottenham		Tottenham
+        # Chelsea		34 46	Chelsea
+        # Arsenal		31 40	Liverpool
+        # Liverpool		30 39	Man City
+        # Man City		30 37	Arsenal
+        # Tottenham		27 36	Tottenham
 
-		ranking1, ranking2 = eng_league_anl.rankings(df1, df2, n_head=5)
+		points1, points2 = eng_league_anl.paired_points(df1, df2, n_head=5)
 
-		self.assertEqual(ranking1.tolist(), [1,2,3,4,5])
-		self.assertEqual(ranking2.tolist(), [1,4,2,3,5])
+		self.assertEqual(points1.tolist(), [34, 31, 30, 30, 27])
+		self.assertEqual(points2.tolist(), [46, 37, 40, 39, 36])
 
-	def test_ranking_corr_by_dates(self):
+	def test_points_corr(self):
 		eng_dao_16_17 = DAO(country="england", season="16-17", cols="sport_cols")
 		eng_league = League(eng_dao_16_17)
 		eng_league_anl = LeagueAnalysis(league=eng_league)
@@ -60,13 +59,13 @@ class table_analysis_test(unittest.TestCase):
 		date1 = "2016-12-28"
 		table_df1 = eng_league.table(to_date=date1)
 
-		corr1 = eng_league_anl.ranking_corr_by_dates(df_tables=[table_df1, table_df1], method="spearman", n_head=10)
+		corr1 = eng_league_anl.points_corr(df_tables=[table_df1, table_df1], method="spearman", n_head=10)
 		self.assertLess(0.98, corr1[0])
 
 		date2 = "2016-12-05"
 		table_df2 = eng_league.table(to_date=date2)
 
-		corr2 = eng_league_anl.ranking_corr_by_dates(df_tables=[table_df1, table_df2], method="spearman", n_head=5)
-		self.assertLess(0.675, corr2[0])
-		self.assertGreater(0.701, corr2[0])
+		corr2 = eng_league_anl.points_corr(df_tables=[table_df1, table_df2], method="spearman", n_head=5)
+		self.assertLess(0.6665, corr2[0])
+		self.assertGreater(0.6669, corr2[0])
 		

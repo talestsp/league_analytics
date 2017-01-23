@@ -52,6 +52,7 @@ class DAO:
 			return data
 
 	def half_league_data(self, half):
+		#TO BE FIXED - it must consider the on going league data
 		median_date = self.search_percentil_date(percentile=0.5)
 
 		if half == 1:

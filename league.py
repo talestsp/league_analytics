@@ -36,11 +36,17 @@ class League:
 		away_grouped = matches.groupby(["AwayTeam"]).apply(lambda df_group: len(df_group[df_group["FTAG"] < df_group["FTHG"]]))
 		lost = home_grouped + away_grouped
 
-		#TODO scored and taken goals
-
-		table = DataFrame(dict(Points=points, Played=played, Won=won, Draw=draw, Lost=lost)).reset_index()
+		home_grouped = matches.groupby(["HomeTeam"]).apply(lambda df_group: sum(df_group["FTHG"]))
+		away_grouped = matches.groupby(["AwayTeam"]).apply(lambda df_group: sum(df_group["FTAG"]))
+		goals_for = home_grouped + away_grouped
+		
+		home_grouped = matches.groupby(["HomeTeam"]).apply(lambda df_group: sum(df_group["FTAG"]))
+		away_grouped = matches.groupby(["AwayTeam"]).apply(lambda df_group: sum(df_group["FTHG"]))
+		goals_aga = home_grouped + away_grouped
+		
+		table = DataFrame(dict(Points=points, Played=played, Won=won, Draw=draw, Lost=lost, GF=goals_for, GA=goals_aga, GD=goals_for - goals_aga)).reset_index()
 		table = table.rename(columns={"index": "Team"})
-		table = table[["Won", "Draw", "Lost", "Played", "Points", "Team"]].sort_values(by="Points", ascending=False).reset_index()
+		table = table[["Points", "Team", "Played", "Won", "Draw", "Lost", "GF", "GA", "GD"]].sort_values(by=["Points", "GD"], ascending=False).reset_index()
 		table.index = range(1,len(table)+1)
 		del table["index"]
 		return table
@@ -182,6 +188,7 @@ class League:
 		return date
 		
 	def half_league_date(self):
+		#TO BE FIXED - it must consider the on going league data
 		'''
 		Returns the date that the teams played half league
 		'''
@@ -196,6 +203,7 @@ class League:
 		return min(data["Date"])
 
 	def end_league_date(self):
+		#TO BE FIXED - it must consider the on going league data
 		'''
 		Returns the date that the last match
 		'''

@@ -9,7 +9,7 @@ class LeagueAnalysis:
 	def __init__(self, league):
 		self.league = league
 
-	def ranking_corr_by_dates(self, df_tables, method="spearman", n_head=None):
+	def points_corr(self, df_tables, method="kendall", n_head=None, precision=3):
 		'''
 		Args:
 			df_tables: list of table dataframes
@@ -17,8 +17,8 @@ class LeagueAnalysis:
 			n_head: n firsts position for the table, if None all position will be considered
 
 		Returns:
-			an array with the correlations between consecutive dates in dates_list 
-		for the <n_head> firsts positions in the table from that date.
+			an array with the correlations of team points between table dataframes for 
+			the <n_head> firsts positions clubs.
 		'''
 
 		if n_head is None:
@@ -30,24 +30,23 @@ class LeagueAnalysis:
 			df1 = df_tables[i]
 			df2 = df_tables[i + 1]
 			
-			ranking1, ranking2 = self.rankings(df1=df1, df2=df2, n_head=n_head)
-			corr = ranking1.corr(ranking2, method=method)
+			points1, points2 = self.paired_points(df1=df1, df2=df2, n_head=n_head)
+			corr = points1.corr(points2, method=method)
 			correlations.append(corr)
 			
-		return correlations		
+		return [float(round(corr, precision)) for corr in correlations]
 
-
-	def rankings(self, df1, df2, n_head):
-		df1_rankings = df1.head(n_head).index.tolist()
+	def paired_points(self, df1, df2, n_head):
+		df1_points = df1.head(n_head)['Points'].tolist()
 		df1_teams = df1.head(n_head)["Team"].tolist()
 
-		df2_rankings = []
+		df2_points = []
 
 		for team in df1_teams:
-			mapping_rank1_rank2 = df2[df2["Team"] == team].index.item()
-			df2_rankings.append(mapping_rank1_rank2)
+			mapping_rank1_rank2 = df2[df2["Team"] == team]['Points'].item()
+			df2_points.append(mapping_rank1_rank2)
 
-		return Series(df1_rankings), Series(df2_rankings)
+		return Series(df1_points), Series(df2_points)
 
 	def home_away_match_performance(self, team):
 		'''

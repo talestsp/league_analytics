@@ -68,4 +68,18 @@ class table_analysis_test(unittest.TestCase):
 		corr2 = eng_league_anl.points_corr(df_tables=[table_df1, table_df2], method="spearman", n_head=5)
 		self.assertLess(0.665, corr2[0])
 		self.assertGreater(0.669, corr2[0])
+
+	def test_range_points_spread(self):
+		spain_dao = DAO(country="spain", season="16-17", cols="sport_cols")
+		league = League(spain_dao)
+		league_anl = LeagueAnalysis(league=league)
 		
+		dates = ['2016/11/28', '2016/12/05', '2016/12/12', '2016/12/19', '2017/01/09', '2017/01/16', '2017/01/22']
+
+		# for date in dates:
+		# 	print()
+		# 	print(league.table(to_date=date))
+
+		range_points_spread = league_anl.range_points_spread(dates=dates, top_n_clubs=6)
+
+		self.assertEqual([11, 11, 12, 9, 11, 9, 12], range_points_spread)

@@ -5,6 +5,7 @@ sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 from pandas import Series
 from plot.plot import PlotDataMultiLine
 from plot.plot_data import PlotData
+from league_analysis import LeagueAnalysis
 
 class LeaguePlot:
 
@@ -30,6 +31,21 @@ class LeaguePlot:
 			max_points = max_y
 
 		pl.plot(max_x=max_x, max_y=max_points * 1.05, fig_width=width, fig_height=height, plot=plot)
+
+	def plot_dispersion_comparison(league1, dates1, legend1, league2, dates2, legend2, top_n_clubs, title, width=600, height=400, plot=True):
+		
+		range1_points_spread = LeagueAnalysis(league=league1).range_points_spread(dates=dates1, top_n_clubs=top_n_clubs)
+		range2_points_spread = LeagueAnalysis(league=league2).range_points_spread(dates=dates2, top_n_clubs=top_n_clubs)
+		
+		plot_data1 = PlotData(x=range(len(range1_points_spread)), y=range1_points_spread, legend=legend1)
+		plot_data2 = PlotData(x=range(len(range2_points_spread)), y=range2_points_spread, legend=legend2)
+
+		pl = PlotDataMultiLine([plot_data1, plot_data2], "Range Points Spread", "Lasts Rounds", title)
+
+		max_y = max([max(range1_points_spread), max(range2_points_spread)])
+		max_x = max([len(range1_points_spread), len(range2_points_spread)])
+
+		pl.plot(max_x, max_y=max_y * 1.20, fig_width=width, fig_height=height, plot=plot)
 
 if __name__ == "__main__":
 	lp = LeaguePlot(country="england", n_round=19, season="16-17")

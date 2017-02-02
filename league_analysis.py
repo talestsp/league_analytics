@@ -17,7 +17,7 @@ class LeagueAnalysis:
 			n_head: n firsts position for the table, if None all position will be considered
 
 		Returns:
-			an array with the correlations of team points between table dataframes for 
+			an array with the correlations of team points between table dataframes (df_tables) for 
 			the <n_head> firsts positions clubs.
 		'''
 
@@ -33,7 +33,7 @@ class LeagueAnalysis:
 			points1, points2 = self.paired_points(df1=df1, df2=df2, n_head=n_head)
 			corr = points1.corr(points2, method=method)
 			correlations.append(corr)
-			
+		
 		return [float(round(corr, precision)) for corr in correlations]
 
 	def paired_points(self, df1, df2, n_head):
@@ -48,7 +48,14 @@ class LeagueAnalysis:
 
 		return Series(df1_points), Series(df2_points)
 
-	
+	def range_points_spread(self, dates, top_n_clubs):
+		range_points_spread_list = []
+		for date in dates:
+			table = self.league.table(to_date=date).sort_values(by="Points", ascending=False)
+			points = table.head(top_n_clubs)["Points"].tolist()
+			range_points_spread_list.append(points[0] - points[-1])
+
+		return range_points_spread_list
 
 	def home_away_match_performance(self, team):
 		'''
